@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-headless
+  namespace: cloudai-2
+  labels:
+    app: clickhouse
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: rpc
+    port: 9000
+    targetPort: 9000
+    protocol: TCP      
+  - name: rest
+    port: 8123
+    targetPort: 8123
+    protocol: TCP      
+  - name: interserver
+    port: 9009
+    targetPort: 9009
+    protocol: TCP
+  selector:
+    app: clickhouse
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-web 
+  namespace: cloudai-2
+  labels:
+    app: clickhouse
+spec:  
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: rpc
+    port: 9000
+    targetPort: 9000
+    protocol: TCP      
+  - name: rest
+    port: 8123
+    targetPort: 8123
+    protocol: TCP      
+  selector:
+    app: clickhouse
+  sessionAffinity: None
+  type: NodePort

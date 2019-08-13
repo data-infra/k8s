@@ -1,0 +1,166 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clickhouse-configmap
+  namespace: cloudai-2
+  labels:
+    app: clickhouse
+data:
+  clickhouse_remote_servers.xml: |-
+    <yandex>
+        <remote_servers incl="clickhouse_remote_servers" >        
+        <default_cluster>
+              <shard>
+                <replica>
+                    <host>clickhouse-0.clickhouse-headless</host>
+                    <port>9000</port>
+                    <user>root</user>
+                    <password>admin</password>
+                </replica>
+              </shard>
+              <shard>
+                <replica>
+                    <host>clickhouse-1.clickhouse-headless</host>
+                    <port>9000</port>
+                    <user>root</user>
+                    <password>admin</password>
+                </replica>
+              </shard>
+              <shard>
+                <replica>
+                    <host>clickhouse-2.clickhouse-headless</host>
+                    <port>9000</port>
+                    <user>root</user>
+                    <password>admin</password>
+                </replica>
+              </shard>
+            
+        </default_cluster>
+        </remote_servers>
+    </yandex>
+  docker_related_config.xml: |-
+    <yandex>
+        <listen_host>0.0.0.0</listen_host>
+        <listen_host>::</listen_host>
+        <listen_try>1</listen_try>
+        <!--
+        <logger>
+            <console>1</console>
+        </logger>
+        -->
+    </yandex>
+      
+  zookeeper-servers.xml: |-
+    <yandex>
+        <zookeeper incl="zookeeper-servers">
+            <node index="1">
+                <host>zookeeper</host>
+                <port>2181</port>
+            </node>        
+        </zookeeper>
+
+        <!-- Allow to execute distributed DDL queries (CREATE, DROP, ALTER, RENAME) on cluster.
+        Works only if ZooKeeper is enabled. Comment it if such functionality isn't required. -->        
+        <distributed_ddl incl="clickhouse_distributed_ddl">
+            <!-- Path in ZooKeeper to queue with DDL queries -->
+            <path>/clickhouse/task_queue/ddl</path>
+
+            <!-- Settings from this profile will be used to execute DDL queries -->
+            <!-- <profile>default</profile> -->
+        </distributed_ddl>
+    </yandex>
+
+
+---
+# Source: clickhouse-on-kube/templates/configmap_usersd.yaml
+# This is a simple example of using a config map to create a single page static site.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clickhouse-user-configmap
+  namespace: cloudai-2
+  labels:
+    app: clickhouse-user
+data:
+  users.xml: |-
+    <yandex>
+        <!-- Profiles-->
+        <profiles>
+            <default>
+                <!-- Maximum memory usage for processing single query, in bytes. -->
+                <max_memory_usage>10000000000</max_memory_usage>
+
+                <!-- Use cache of uncompressed blocks of data. Meaningful only for processing many of very short queries. -->
+                <use_uncompressed_cache>0</use_uncompressed_cache>
+
+                <load_balancing>random</load_balancing>
+            </default>
+
+            <!-- readonly profile -->
+            <readonly>
+                <readonly>1</readonly>
+            </readonly>
+        </profiles>
+
+        <!-- Quotas -->
+        <quotas>
+            <default>
+                <!-- Limits for time interval. You could specify many intervals with different limits. -->
+                <interval>
+                    <!-- Length of interval. -->
+                    <duration>3600</duration>
+
+                    <!-- No limits. Just calculate resource usage for time interval. -->
+                    <queries>0</queries>
+                    <errors>0</errors>
+                    <result_rows>0</result_rows>
+                    <read_rows>0</read_rows>
+                    <execution_time>0</execution_time>
+                </interval>
+            </default>
+        </quotas>
+
+        <!-- Users 配置不同的用户 --> 
+        <users>
+            <svc>
+                <password>admin</password>
+            
+                <networks incl="networks" replace="replace">
+                    <ip>::/0</ip>
+                </networks>
+
+                <!-- Settings profile for user. -->
+                <profile>default</profile>
+
+                <!-- Quota for user. -->
+                <quota>default</quota>
+            </svc>
+            
+            <!-- User for distributed queries -->
+            <root>
+                <password>admin</password>
+
+                <networks incl="networks" replace="replace">
+                    <ip>::/0</ip>
+                </networks>
+
+                <!-- Settings profile for user. -->
+                <profile>default</profile>
+
+                <!-- Quota for user. -->
+                <quota>default</quota>
+            </root>
+
+            <readonly>
+                <password></password>
+                <networks incl="networks" replace="replace">
+                    <ip>::1</ip>
+                    <ip>127.0.0.1</ip>
+                </networks>
+                <profile>readonly</profile>
+                <quota>default</quota>
+            </readonly>
+        </users>
+    </yandex>
+

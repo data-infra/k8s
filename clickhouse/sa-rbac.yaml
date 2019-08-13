@@ -1,0 +1,27 @@
+# Source: clickhouse-on-kube/templates/roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:  
+  name: patch-pod
+  namespace: cloudai-2
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - pods
+  verbs:
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:  
+  name: default:patch-pod
+  namespace: cloudai-2
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: patch-pod
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: cloudai-2

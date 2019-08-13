@@ -1,0 +1,101 @@
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: clickhouse
+  namespace: cloudai-2
+  labels:
+    app: clickhouse
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 3
+  selector:
+    matchLabels:
+      app: clickhouse
+  serviceName: clickhouse-headless
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:      
+      initContainers:
+      - name: labeler
+        image: devth/k8s-labeler
+        env:
+        - name: KUBE_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: KUBE_LABEL_shard_name
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      containers:
+        - name: clickhouse
+          image: "dmitryb/clickhouse-server:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: rpc
+            containerPort: 9000
+            protocol: TCP
+          - name: rest
+            containerPort: 8123
+            protocol: TCP          
+          - name: interserver
+            containerPort: 9009
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rest
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rest
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 5
+            timeoutSeconds: 1
+          volumeMounts:
+          - name: clickhouse-configd
+            mountPath: /etc/clickhouse-server/config.d
+          - name: clickhouse-usersd
+            mountPath: /etc/clickhouse-server/users.d
+          - name: clickhouse-data
+            mountPath: /clickhouse
+          
+          resources:
+            limits:
+              cpu: 2500m
+              memory: 2024Mi
+            requests:
+              cpu: 250m
+              memory: 1024Mi
+            
+      volumes:
+      - name: clickhouse-configd
+        configMap:
+          name: clickhouse-configmap
+      
+      - name: clickhouse-usersd
+        configMap:
+          name: clickhouse-user-configmap
+      
+  volumeClaimTemplates:
+  - metadata:
+      name: clickhouse-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      selector:
+        matchLabels:
+          cloudai-pvname: cloudai-clickhouse-pv
+      resources:
+        requests:
+          storage: 2Gi
+
+
