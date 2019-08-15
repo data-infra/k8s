@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kylin-configmap
+  namespace: cloudai-2
+  labels:
+    app: kylin
+data:
+  bootstrap.sh: |-
+    #!/bin/bash
+    cp /tmp/kylin-config/* $KYLIN_HOME/conf/
+    cp /tmp/hadoop-config/* $HADOOP_CONF_DIR/
+    cp /tmp/hive-config/* $HIVE_HOME/conf/
+    cp /tmp/hbase-config/* $HBASE_HOME/conf/
+    cp /tmp/spark-config/* $SPARK_HOME/conf/
+    cp /tmp/hadoop-config/hdfs-site.xml $HBASE_HOME/conf/
+    cp /tmp/hadoop-config/mapred-site.xml $HIVE_HOME/conf/
+    
+    export hive_dependency=$HIVE_HOME/conf:$HIVE_HOME/lib/*:$HIVE_HOME/hcatalog/share/hcatalog/hive-hcatalog-core-*.jar
+    
+    rm /usr/local/hive/lib/log4j-slf4j-impl-2.6.2.jar   # 删除多余的日志包
+    rm /usr/local/hbase/lib/slf4j-log4j12-1.7.5.jar   # 删除多余的日志包
+    # 注释掉$KYLIN_HOME/tomcat/conf/server.xml中的https部分，这一步在镜像中已经去掉了。如果已经注释过了不能再次注释
+    #sed -i 's/<Connector port="7443"/ <!-- <Connector port="7443"/g' $KYLIN_HOME/tomcat/conf/server.xml
+    #sed -i 's/sslProtocol="TLS" \/>/sslProtocol="TLS" \/> --> /g' $KYLIN_HOME/tomcat/conf/server.xml
+    # 替换hbase中的旧版本的包
+    rm /usr/local/hbase/lib/jruby-complete-*.jar
+    cp /usr/local/hadoop-2.7.3/share/hadoop/tools/lib/joda-time-*.jar /usr/local/hbase/lib/
+    # 删除hive中的旧包
+    rm /usr/local/hive/lib/jackson-datatype-joda-2.4.6.jar
+    # 修改hadoop中读取错误，去除掉加载$HADOOP_HOME/contrib/capacity-scheduler/*.jar的代码
+    cp /tmp/kylin-config/hadoop-env.sh  $HADOOP_CONF_DIR/hadoop-env.sh 
+    # 设置集群每个worker的地址到配置文件
+    server_str="kylin-0.kylin.cloudai-2.svc.cluster.local:7070"
+    for((i=1;i<$MAX_SERVERS;i++));
+    do
+      server_str="${server_str},kylin-${i}.kylin.cloudai-2.svc.cluster.local:7070"
+      echo $server_str
+    done
+    # 替换文件中的worker集群地址
+    sed -i "s/{{server_str}}/${server_str}/g" $KYLIN_HOME/conf/kylin.properties
+    
+    
+    # sleep 10000
+    # $KYLIN_HOME/bin/check-env.sh
+    #if [[ $? -ne 0 ]]; then
+    #  exit 
+    #fi
+    #sleep 100000
+    $KYLIN_HOME/bin/kylin.sh start
+    sleep 100
+    until find ${KYLIN_HOME}/logs -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
+      tail -F ${KYLIN_HOME}/logs/* &
+      while true; do sleep 100; done
+    
+
+
+  kylin.properties: |-
+    #所有实例共享一个metadata，在hbase中的metadata store,在zookeeper的/hbase/table/kylin_metadata可以查看。
+    kylin.metadata.url=kylin_metadata@hbase
+    #节点列表，
+    kylin.server.cluster-servers={{server_str}}
+    # job 模式代表该服务仅用于任务调度，不用于查询；query 模式代表该服务仅用于查询，不用于构建任务的调度；all 模式代表该服务同时用于任务调度和 SQL 查询。
+    kylin.server.mode=all
+    # 使用多任务引擎，在多个 Kylin 节点上配置它的角色为 job 或 all
+    kylin.job.scheduler.default=2
+    # 启用分布式任务锁，避免它们之间产生竞争
+    kylin.job.lock=org.apache.kylin.storage.hbase.util.ZookeeperJobLock
+    # kylin在hdfs中的工作目录
+    kylin.env.hdfs-working-dir=/kylin
+    # 在zookeeper中的根目录
+    kylin.env.zookeeper-base-path=/kylin
+    # job完成或失败的邮件通知
+    #mail.enabled=true
+    #mail.host=smtp.exmail.qq.com:465
+    #mail.username=luan.peng@intellif.com
+    #mail.password=1qaz2wsx#EDEC
+    #mail.sender=luan.peng@intellif.com
+    #kylin.job.admin.dls=luan.peng@intellif.com
+
+
+
+  kylin_hive_conf.xml: |-
+    <configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+        <description>Block replication</description>
+    </property>
+    <property>
+       <name>hive.metastore.uris</name>
+      <value>thrift://hadoop-hive-service:9083</value>
+    </property>
+    <property>
+        <name>hive.exec.compress.output</name>
+        <value>true</value>
+        <description>Enable compress</description>
+    </property>
+    <property>
+        <name>hive.auto.convert.join</name>
+        <value>true</value>
+        <description>Enables the optimization about converting common join into mapjoin</description>
+    </property>
+    <property>
+        <name>hive.auto.convert.join.noconditionaltask</name>
+        <value>true</value>
+        <description>enable map-side join</description>
+    </property>
+    <property>
+        <name>hive.auto.convert.join.noconditionaltask.size</name>
+        <value>100000000</value>
+        <description>enable map-side join</description>
+    </property>
+    <property>
+        <name>mapreduce.job.split.metainfo.maxsize</name>
+        <value>-1</value>
+        <description>The maximum permissible size of the split metainfo file.
+            The JobTracker won't attempt to read split metainfo files bigger than
+            the configured value. No limits if set to -1.
+        </description>
+    </property>
+    <property>
+        <name>hive.stats.autogather</name>
+        <value>true</value>
+        <description>Collect statistics for newly created intermediate table</description>
+    </property>
+    <property>
+        <name>hive.merge.mapfiles</name>
+        <value>false</value>
+        <description>Disable Hive's auto merge</description>
+    </property>
+    <property>
+        <name>hive.merge.mapredfiles</name>
+        <value>false</value>
+        <description>Disable Hive's auto merge</description>
+    </property>
+    </configuration>
+  
+  
+  
+  hadoop-env.sh: |-
+    export JAVA_HOME=${JAVA_HOME}
+    export HADOOP_CONF_DIR=${HADOOP_CONF_DIR:-"/etc/hadoop"}
+    # export HADOOP_HEAPSIZE=1000   # MB
+    export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
+
+    export HADOOP_NAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_NAMENODE_OPTS"
+    export HADOOP_DATANODE_OPTS="-Dhadoop.security.logger=ERROR,RFAS $HADOOP_DATANODE_OPTS"
+
+    export HADOOP_SECONDARYNAMENODE_OPTS="-Dhadoop.security.logger=${HADOOP_SECURITY_LOGGER:-INFO,RFAS} -Dhdfs.audit.logger=${HDFS_AUDIT_LOGGER:-INFO,NullAppender} $HADOOP_SECONDARYNAMENODE_OPTS"
+
+    export HADOOP_NFS3_OPTS="$HADOOP_NFS3_OPTS"
+    export HADOOP_PORTMAP_OPTS="-Xmx512m $HADOOP_PORTMAP_OPTS"
+
+
+    export HADOOP_CLIENT_OPTS="-Xmx512m $HADOOP_CLIENT_OPTS"
+
+    export HADOOP_SECURE_DN_USER=${HADOOP_SECURE_DN_USER}
+
+
+    export HADOOP_SECURE_DN_LOG_DIR=${HADOOP_LOG_DIR}/${HADOOP_HDFS_USER}
+
+    export HADOOP_PID_DIR=${HADOOP_PID_DIR}
+    export HADOOP_SECURE_DN_PID_DIR=${HADOOP_PID_DIR}
+
+    export HADOOP_IDENT_STRING=$USER
+
+
+
+
+
+
+
+
+
+
