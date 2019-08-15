@@ -1,0 +1,3 @@
+
+kubectl delete configmap druid-common-runtime-configmap -n cloudai-2
+kubectl create configmap druid-common-runtime-configmap --from-file=./conf/_common/common.runtime.properties --namespace=cloudai-2

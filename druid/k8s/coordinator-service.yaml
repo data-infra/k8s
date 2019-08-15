@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: druid-coordinator
+  namespace: cloudai-2
+  labels:
+    component: coordinator
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8081
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    component: coordinator

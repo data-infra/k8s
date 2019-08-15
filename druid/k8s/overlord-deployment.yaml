@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hive-metastore-database
+  namespace: cloudai-2
+  labels:
+    app: hive
+data:
+  execute.sql: |-
+    -- create database
+    CREATE DATABASE IF NOT EXISTS druid DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: druid-overlord
+  namespace: cloudai-2
+  labels:
+    component: overlord
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: overlord
+  template:
+    metadata:
+      labels:
+        component: overlord
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      initContainers:
+        - name: init-dababase
+          image:  luanpeng/lp:database-tools-1.0
+          env:
+            - name: DRIVER_NAME
+              value: "com.mysql.jdbc.Driver"
+            - name: URL
+              value: "jdbc:mysql://mysql-service:3306/mysql?useUnicode=true&characterEncoding=utf8&useSSL=false"
+            - name: USERNAME
+              value: "root"
+            - name: PASSWORD
+              value: admin
+            - name: IDENTIFIED
+              value: admin
+          volumeMounts:
+            - name: init-dababase-volume
+              mountPath: /root/db_tools/script
+
+      containers:
+        - name: druid
+          image: luanpeng/lp:druid-0.15 # deepaksood619/zendruid:2.0.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - -c
+            - ip=$(awk 'END{print $1}' /etc/hosts) && sed -ri 's/druid.host=.*/druid.host='${ip}'/g' /druid/conf/overlord/runtime.properties && bin/run-druid overlord /druid/conf
+          ports:
+            - name: http
+              containerPort: 8090
+              protocol: TCP
+#          livenessProbe:
+#            initialDelaySeconds: 60
+#            httpGet:
+#              path: /status/health
+#              port: 8090
+          readinessProbe:
+            initialDelaySeconds: 30
+            httpGet:
+              path: /status/health
+              port: 8090
+          volumeMounts:
+          - mountPath: /var/druid/
+            name: data
+          - name: druid-common-runtime-configmap
+            mountPath: /druid/conf/_common/common.runtime.properties
+            subPath: common.runtime.properties
+            readOnly: False
+
+        - name: druid-exporter
+          image: deepaksood619/druid-exporter:0.0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: "cloudai-druid-pvc"
+      - name: druid-common-runtime-configmap
+        configMap:
+          name: druid-common-runtime-configmap
+      - name: init-dababase-volume
+        configMap:
+          name: hive-metastore-database

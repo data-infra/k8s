@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: druid-historical
+  namespace: cloudai-2
+  labels:
+    component: historical
+spec:
+  serviceName: druid-historical
+  replicas: 1
+  selector:
+    matchLabels:
+      component: historical
+  template:
+    metadata:
+      labels:
+        component: historical
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+      - name: druid
+        command:
+          - /bin/bash
+          - -c
+          - ip=$(awk 'END{print $1}' /etc/hosts) && sed -ri 's/druid.host=.*/druid.host='${ip}'/g' /druid/conf/historical/runtime.properties && bin/run-druid historical /druid/conf
+        image: luanpeng/lp:druid-0.15 # deepaksood619/zendruid:2.0.4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8083
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 10Gi
+#        livenessProbe:
+#          initialDelaySeconds: 60
+#          httpGet:
+#            path: /status/health
+#            port: 8083
+        readinessProbe:
+          initialDelaySeconds: 120
+          httpGet:
+            path: /status/health
+            port: 8083
+        volumeMounts:
+        - mountPath: /var/druid/
+          name: data
+        - name: druid-common-runtime-configmap
+          mountPath: /druid/conf/_common/common.runtime.properties
+          subPath: common.runtime.properties
+          readOnly: False
+
+      - name: druid-exporter
+        image: deepaksood619/druid-exporter:0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8000
+            protocol: TCP
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: "cloudai-druid-pvc"
+      - name: druid-common-runtime-configmap
+        configMap:
+          name: druid-common-runtime-configmap

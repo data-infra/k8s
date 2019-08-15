@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: druid-router
+  namespace: cloudai-2
+  labels:
+    component: router
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: router
+  template:
+    metadata:
+      labels:
+        component: router
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+      - name: druid
+        image: luanpeng/lp:druid-0.15 # deepaksood619/zendruid:2.0.4
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+          - -c
+          - ip=$(awk 'END{print $1}' /etc/hosts) && sed -ri 's/druid.host=.*/druid.host='${ip}'/g' /druid/conf/router/runtime.properties && bin/run-druid router /druid/conf
+        ports:
+          - name: http
+            containerPort: 8888
+            protocol: TCP
+#        livenessProbe:
+#          initialDelaySeconds: 60
+#          httpGet:
+#            path: /status/health
+#            port: 8888
+        readinessProbe:
+          initialDelaySeconds: 30
+          httpGet:
+            path: /status/health
+            port: 8888
+        volumeMounts:
+        - name: druid-common-runtime-configmap
+          mountPath: /druid/conf/_common/common.runtime.properties
+          subPath: common.runtime.properties
+          readOnly: False
+
+      - name: druid-exporter
+        image: deepaksood619/druid-exporter:0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 8000
+            protocol: TCP
+
+
+      volumes: 
+      - name: druid-common-runtime-configmap
+        configMap:
+          name: druid-common-runtime-configmap
