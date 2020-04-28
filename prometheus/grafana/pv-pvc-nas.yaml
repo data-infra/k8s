@@ -1,0 +1,41 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: monitoring-grafana-pvc
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      monitoring-pvname: monitoring-grafana-pv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-grafana-pv
+  namespace: monitoring
+  labels:
+    monitoring-pvname: monitoring-grafana-pv
+spec:     # 定义pv属性
+  capacity:         # 容量
+    storage: 1Gi   # 存储容量
+  accessModes:    # 访问模式
+    - ReadWriteMany  
+  flexVolume:
+    driver: "alicloud/nas"   # 这里是固定的
+    options:
+      server: "230b749a22-pns5.cn-shenzhen.nas.aliyuncs.com"  
+      path: "/k8s/monitoring/grafana"         #  自己先登录进去创建plugins
+      vers: "4.0"
+#  glusterfs:
+#    endpoints: 'glusterfs-cluster'
+#    path: 'gv-monitoring-grafana'   
+#    readOnly: false
+
+  persistentVolumeReclaimPolicy: Recycle  
+
+

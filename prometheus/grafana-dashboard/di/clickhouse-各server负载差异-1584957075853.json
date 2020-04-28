@@ -1,0 +1,2119 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Clickhouse metrics, Monitoring Agent metrics",
+  "editable": true,
+  "gnetId": 882,
+  "graphTooltip": 1,
+  "id": 32,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 30,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_read_bytes)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process read bytes (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 0
+      },
+      "id": 65,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_read_bytes)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        },
+        {
+          "expr": "sum(system_processes_written_bytes)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process written_bytes (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 62,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge bytes_written_uncompressed(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 8
+      },
+      "id": 60,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_read(million) ",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_written_uncompressed(G) ",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge bytes_read_uncompressed(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 16
+      },
+      "id": 69,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_parts_bytes_on_disk)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "parts bytes_on_disk (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 16
+      },
+      "id": 70,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_parts_data_uncompressed_bytes)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "parts data_uncompressed_bytes(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 24
+      },
+      "id": 41,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_events_value{event='Query'}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "total query num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 24
+      },
+      "id": 42,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": null,
+        "sortDesc": null,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_events_value{event='SelectQuery'}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "total select num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 24
+      },
+      "id": 43,
+      "interval": null,
+      "legend": {
+        "percentage": false,
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_events_value{event='FileOpen'}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "total fileopen num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 32
+      },
+      "id": 38,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_databases_num",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "database num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 32
+      },
+      "id": 39,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_tables_num)by(ip)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "tables num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 32
+      },
+      "id": 40,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_columns_num)by(ip)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "columns num",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 40
+      },
+      "id": 34,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "increase(system_events_value{event='Query'}[1d])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(system_events_value{event='SelectQuery',ip=~\"$ip\"}[10m])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "SelectQuery number {{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "increase(system_events_value{event='FileOpen',ip=~\"$ip\"}[10m])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "FileOpen number {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "event query increase num in 1 day",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 40
+      },
+      "id": 56,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": null,
+        "sortDesc": null,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "increase(system_events_value{event='Query'}[1d])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(system_events_value{event='SelectQuery'}[1d])",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "increase(system_events_value{event='FileOpen',ip=~\"$ip\"}[10m])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "FileOpen number {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "event select increase num in 1 day",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 40
+      },
+      "id": 57,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "current",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "increase(system_events_value{event='Query'}[10m])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "increase(system_events_value{event='SelectQuery'}[10m])",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "increase(system_events_value{event='FileOpen'}[1d])",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "event fileopen increase num in 10minute",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 48
+      },
+      "id": 35,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "avg(system_merges_elapsed)by(ip)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge elapsed(s)",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 48
+      },
+      "id": 36,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts)by(ip)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "total_size_bytes_compressed(G) ",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "total_size_marks(million) ",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_read_uncompressed(G) ",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_read(million) ",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_written_uncompressed(G) ",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge num_parts ",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 48
+      },
+      "id": 58,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "total_size_marks(million) ",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_read_uncompressed(G) ",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_read(million) ",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_written_uncompressed(G) ",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge total_size_bytes_compressed(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 56
+      },
+      "id": 59,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks/1000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_read_uncompressed(G) ",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_read(million) ",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_written_uncompressed(G) ",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge total_size_marks(million) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 56
+      },
+      "id": 63,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written/1000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge rows_written(million)",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 56
+      },
+      "id": 61,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_num_parts{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "num_parts ",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(system_merges_total_size_bytes_compressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(system_merges_total_size_marks/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(system_merges_rows_read/1000000)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "E"
+        },
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed{ip=~\"$ip\"}/1000000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "bytes_written_uncompressed(G) ",
+          "refId": "F"
+        },
+        {
+          "expr": "sum(system_merges_rows_written{ip=~\"$ip\"}/1000000)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "rows_written(million)",
+          "refId": "G"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge rows_read(million) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 64
+      },
+      "id": 31,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "avg(system_processes_memory_usage)by(ip)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        },
+        {
+          "expr": "avg(system_processes_peak_memory_usage{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "peak_memory_usage {{ip}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process memory_usage (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 64
+      },
+      "id": 29,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_read_rows)by(ip)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        },
+        {
+          "expr": "sum(system_processes_written_rows{ip=~\"$ip\"})by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "written_rows {{ip}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process read_rows",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 64
+      },
+      "id": 64,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_read_rows)by(ip)",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": " {{ip}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        },
+        {
+          "expr": "sum(system_processes_written_rows)by(ip)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process written_rows ",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 71
+      },
+      "id": 1,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_metrics_value{metric=\"Query\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "system_metrics_value{metric=\"Merge\",ip=~\"$ip\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "merge {{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "system_metrics_value{metric=\"PartMutation\",ip=~\"$ip\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "PartMutation {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "metrics query number",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 71
+      },
+      "id": 67,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_metrics_value{metric=\"Query\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "system_metrics_value{metric=\"Merge\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "system_metrics_value{metric=\"PartMutation\",ip=~\"$ip\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "PartMutation {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "metrics merge number",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 78
+      },
+      "id": 32,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedFetch\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedSend\",ip=~\"$ip\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "send {{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedChecks\",ip=~\"$ip\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "check {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "replicas-metric fetched number",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 78
+      },
+      "id": 68,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "avg",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedFetch\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "B",
+          "step": 10
+        },
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedSend\"}",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{ip}}",
+          "refId": "A"
+        },
+        {
+          "expr": "system_metrics_value{metric=\"ReplicatedChecks\"}",
+          "format": "time_series",
+          "hide": true,
+          "intervalFactor": 1,
+          "legendFormat": "check {{ip}}",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "replicas-metric send number",
+      "type": "grafana-piechart-panel",
+      "valueName": "avg"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [
+    "clickhouse",
+    "Altinity",
+    "operator"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "clickhouse-各server负载差异",
+  "uid": "F19UJqXWz",
+  "version": 97
+}

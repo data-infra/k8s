@@ -1,0 +1,423 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Clickhouse metrics, Monitoring Agent metrics",
+  "editable": true,
+  "gnetId": 882,
+  "graphTooltip": 1,
+  "id": 33,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "id": 30,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_read_bytes)by(database)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": " {{database}}",
+          "metric": "chi_clickhouse_event_NetworkErrors",
+          "refId": "A",
+          "step": 120
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process read bytes (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Show network errors and distributed server-server connections failures",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 0
+      },
+      "id": 65,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Manage Distributed tables",
+          "url": "https://clickhouse.tech/docs/en/query_language/system/#query_language-system-distributed"
+        },
+        {
+          "targetBlank": true,
+          "title": "NetworkErrors",
+          "url": "https://github.com/ClickHouse/ClickHouse/search?q=NetworkErrors"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_processes_written_bytes)by(database)/1000000000",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{database}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "process written_bytes (G)",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 62,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_bytes_written_uncompressed/1000000000)by(database)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{database}}",
+          "refId": "F"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge bytes_written_uncompressed(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 8
+      },
+      "id": 60,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_merges_bytes_read_uncompressed/1000000000)by(database)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{database}}",
+          "refId": "D"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "merge bytes_read_uncompressed(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 16
+      },
+      "id": 69,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_parts_bytes_on_disk/1000000000)by(database)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{database}}",
+          "refId": "F"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "parts bytes_on_disk(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "prometheus",
+      "description": "Number of queries started to be interpreted and maybe executed. Does not include queries that are failed to parse, that are rejected due to AST size limits; rejected due to quota limits or limits on number of simultaneously running queries. May include internal queries initiated by ClickHouse itself. Does not count subqueries.",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 8,
+        "y": 16
+      },
+      "id": 70,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "sort": "total",
+        "sortDesc": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "max_concurent_queries",
+          "url": "https://clickhouse.tech/docs/en/operations/server_settings/settings/#max-concurrent-queries"
+        },
+        {
+          "targetBlank": true,
+          "title": "max_execution_time",
+          "url": "https://clickhouse.tech/docs/en/operations/settings/query_complexity/#max-execution-time"
+        }
+      ],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum(system_parts_data_uncompressed_bytes/1000000000)by(database)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{database}}",
+          "refId": "D"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "parts data_uncompressed_bytes(G) ",
+      "type": "grafana-piechart-panel",
+      "valueName": "total"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [
+    "clickhouse",
+    "Altinity",
+    "operator"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "clickhouse-各db负载差异",
+  "uid": "Ge-N-nrZz",
+  "version": 14
+}
